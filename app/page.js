@@ -75,7 +75,7 @@ export default function Home() {
                   <div className={styles.circleOrn} />
                   <div className={styles.heroQuote}>
                     <p className={styles.heroQuoteText}>
-                      "A educação é a arma mais poderosa que você pode usar para mudar o mundo."
+                      &quot;A educação é a arma mais poderosa que você pode usar para mudar o mundo.&quot;
                     </p>
                     <span className={styles.heroQuoteAuthor}>— Nelson Mandela</span>
                   </div>
@@ -156,8 +156,8 @@ export default function Home() {
           ))}
         </div>
         <div className={`container ${styles.bannerContent}`}>
-          <p className={styles.bannerQuote}>
-            "Educar não é transferir conhecimento, mas criar possibilidades para a sua produção."
+            <p className={styles.bannerQuote}>
+            &quot;Educar não é transferir conhecimento, mas criar possibilidades para a sua produção.&quot;
           </p>
           <span className={styles.bannerAuthor}>— Paulo Freire</span>
         </div>
@@ -271,7 +271,7 @@ export default function Home() {
               },
             ].map((t) => (
               <div key={t.name} className={styles.testiCard}>
-                <div className={styles.testiQuoteIcon}>"</div>
+                <div className={styles.testiQuoteIcon}>&quot;</div>
                 <p className={styles.testiText}>{t.text}</p>
                 <div className={styles.testiAuthor}>
                   <div className={styles.testiAvatar}>{t.initials}</div>

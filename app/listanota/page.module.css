@@ -1,0 +1,108 @@
+.container {
+  min-height: calc(100vh - 90px);
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 5rem 2rem;
+}
+
+.eyebrow {
+  color: var(--olive);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.container h1 {
+  margin-top: 0.7rem;
+  color: var(--text-dark);
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+}
+
+.searchLabel {
+  display: block;
+  margin-top: 2rem;
+  color: var(--text-dark);
+  font-weight: 600;
+}
+
+.searchInput {
+  width: 100%;
+  max-width: 480px;
+  margin-top: 0.6rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--cream-medium);
+  border-radius: 8px;
+  font: inherit;
+}
+
+.searchInput:focus {
+  outline: 2px solid var(--olive-light);
+  outline-offset: 1px;
+}
+
+.tableWrapper {
+  margin-top: 2rem;
+  overflow-x: auto;
+  background: var(--white);
+  border: 1px solid var(--cream-dark);
+  border-radius: 12px;
+  box-shadow: var(--shadow-soft);
+}
+
+.table {
+  width: 100%;
+  min-width: 700px;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.caption {
+  padding: 1rem 1.2rem;
+  color: var(--text-medium);
+  font-weight: 600;
+  text-align: left;
+}
+
+.table th,
+.table td {
+  padding: 1rem 1.2rem;
+  border-top: 1px solid var(--cream-dark);
+}
+
+.table th {
+  color: var(--text-dark);
+  background: var(--cream);
+  font-size: 0.85rem;
+}
+
+.table td {
+  color: var(--text-medium);
+}
+
+/* Coluna Aluno mais larga */
+.table th:first-child,
+.table td:first-child {
+  font-weight: 600;
+  color: var(--text-dark);
+  min-width: 180px;
+}
+
+/* Células de nota centralizadas */
+.table th:not(:first-child),
+.table td:not(:first-child) {
+  text-align: center;
+}
+
+.empty {
+  padding: 2rem !important;
+  color: var(--text-light) !important;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 3rem 1rem;
+  }
+}
