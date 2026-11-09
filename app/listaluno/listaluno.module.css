@@ -1,0 +1,164 @@
+.container {
+    min-height: calc(100vh - 90px);
+    padding: 3rem 1.5rem;
+    background: #fdfbf7;
+}
+
+.headerSection {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.headerSection h2 {
+    font-size: 2.2rem;
+    margin-bottom: .4rem;
+    color: #3182ce;
+}
+
+.headerSection p {
+    color: #718096;
+    font-size: 1rem;
+}
+
+.tableCard {
+    max-width: 1200px;
+    margin: auto;
+    padding: 2rem;
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+}
+
+.actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.search {
+    width: 350px;
+    max-width: 100%;
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
+    border: 1px solid #cbd5e0;
+    background: #fbfbfc;
+    color: #2d3748;
+    outline: none;
+    transition: .2s ease;
+}
+
+.search::placeholder {
+    color: #a0aec0;
+}
+
+.search:focus {
+    border-color: #63b3ed;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.25);
+}
+
+.total {
+    color: #4a5568;
+    font-weight: 600;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.table thead {
+    background: #ebf8ff;
+}
+
+.table th {
+    padding: 1rem;
+    text-align: left;
+    color: #2b6cb0;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #bee3f8;
+}
+
+.table td {
+    padding: 0.9rem 1rem;
+    color: #4a5568;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.table tbody tr {
+    background: #ffffff;
+    transition: background 0.15s ease;
+}
+
+.table tbody tr:nth-child(even) {
+    background: #f7fafc;
+}
+
+.table tbody tr:hover {
+    background: #ebf8fa;
+}
+
+.table tbody tr:hover td {
+    color: #2b6cb0;
+}
+
+.botaoEditar,
+.botaoExcluir {
+    border: none;
+    padding: 0.45rem 0.85rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 0 4px;
+    transition: all 0.2s ease;
+}
+
+.botaoEditar {
+    background: #bee3f8;
+    color: #2b6cb0;
+}
+
+.botaoEditar:hover {
+    background: #90cdf4;
+    transform: translateY(-1px);
+}
+
+.botaoExcluir {
+    background: #fed7d7;
+    color: #c53030;
+}
+
+.botaoExcluir:hover {
+    background: #feb2b2;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search {
+        width: 100%;
+    }
+
+    .tableCard {
+        overflow-x: auto;
+    }
+
+    .table {
+        min-width: 700px;
+    }
+}

@@ -1,164 +1,120 @@
 import db from "../../db/banco";
 import { NextResponse } from "next/server";
 
-const campos = ["trabalho1", "trabalho2", "nota1", "nota2", "nota3"];
-
-function respostaErro(mensagem, status = 400) {
-  return NextResponse.json({ error: mensagem }, { status });
-}
-
-function validarNota(valor) {
-  const numero = Number(valor);
-  return Number.isFinite(numero) && numero >= 0 && numero <= 10;
-}
-
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-
+// Listar notas com dados do aluno
 export async function GET() {
-  try {
-    const notas = db.prepare(`
-      SELECT
-        n.id_nota,
-        n.trabalho1 AS t1,
-        n.trabalho2 AS t2,
-        n.nota1 AS n1,
-        n.nota2 AS n2,
-        n.nota3 AS n3,
-        n.aluno_id,
-        a.nome AS aluno_nome,
-        a.ra AS aluno_ra,
-        ROUND((n.trabalho1 + n.trabalho2 + n.nota1 + n.nota2 + n.nota3) / 5.0, 1) AS media,
-        CASE
-          WHEN ROUND((n.trabalho1 + n.trabalho2 + n.nota1 + n.nota2 + n.nota3) / 5.0, 1) >= 6.0 THEN 'Aprovado'
-          WHEN ROUND((n.trabalho1 + n.trabalho2 + n.nota1 + n.nota2 + n.nota3) / 5.0, 1) >= 5.0 THEN 'Recuperação'
-          ELSE 'Reprovado'
-        END AS situacao
-      FROM notas n
-      INNER JOIN aluno a ON a.id_aluno = n.aluno_id
-      ORDER BY a.nome
-    `).all();
-
-    return NextResponse.json(
-      { notas },
-      {
-        headers: {
-          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
-        },
-      }
-    );
-  } catch (error) {
-    console.error(error);
-    return respostaErro("Não foi possível listar as notas.", 500);
-  }
+    try {
+        const notas = db.prepare(`
+            SELECT 
+                notas.id_nota, 
+                notas.id_aluno,
+                notas.t1, 
+                notas.t2, 
+                notas.n1, 
+                notas.n2, 
+                notas.n3, 
+                alunos.nome, 
+                alunos.ra,
+                alunos.serie,
+                alunos.idade
+            FROM notas 
+            INNER JOIN alunos ON notas.id_aluno = alunos.id_aluno
+            ORDER BY alunos.nome
+        `).all();
+        return NextResponse.json(notas);
+    } catch (erro) {
+        console.error("Erro ao listar notas:", erro);
+        return NextResponse.json({ erro: "Erro ao buscar notas." }, { status: 500 });
+    }
 }
 
+// Salvar / Criar nota
 export async function POST(request) {
-  try {
-    const dados = await request.json();
-    const alunoId = Number(dados.aluno_id);
-    const valores = campos.map((campo) => dados[campo] ?? dados[campo.replace("trabalho", "t")] ?? dados[campo.replace("nota", "n")]);
+    try {
+        const dados = await request.json();
+        const t1 = parseFloat(dados.trabalho1 ?? dados.t1) || 0;
+        const t2 = parseFloat(dados.trabalho2 ?? dados.t2) || 0;
+        const n1 = parseFloat(dados.nota1 ?? dados.n1) || 0;
+        const n2 = parseFloat(dados.nota2 ?? dados.n2) || 0;
+        const n3 = parseFloat(dados.nota3 ?? dados.n3) || 0;
+        const id_aluno = dados.id_aluno;
 
-    if (!Number.isInteger(alunoId) || alunoId <= 0) {
-      return respostaErro("Informe um aluno válido.");
+        if (!id_aluno) {
+            return NextResponse.json({ erro: "ID do aluno é obrigatório." }, { status: 400 });
+        }
+
+        // Verifica se o aluno já tem nota cadastrada
+        const notaExistente = db.prepare("SELECT id_nota FROM notas WHERE id_aluno = ?").get(id_aluno);
+
+        if (notaExistente) {
+            const updateSql = db.prepare(`
+                UPDATE notas 
+                SET t1 = ?, t2 = ?, n1 = ?, n2 = ?, n3 = ? 
+                WHERE id_aluno = ?
+            `);
+            updateSql.run(t1, t2, n1, n2, n3, id_aluno);
+            return NextResponse.json({ mensagem: "Notas atualizadas com sucesso!" });
+        } else {
+            const insertSql = db.prepare(`
+                INSERT INTO notas (id_aluno, t1, t2, n1, n2, n3) 
+                VALUES (?, ?, ?, ?, ?, ?)
+            `);
+            insertSql.run(id_aluno, t1, t2, n1, n2, n3);
+            return NextResponse.json({ mensagem: "Nota cadastrada com sucesso!" });
+        }
+    } catch (erro) {
+        console.error("Erro ao realizar o cadastro de notas:", erro);
+        return NextResponse.json({ erro: "Erro ao salvar notas." }, { status: 500 });
     }
-
-    if (!valores.every((valor) => validarNota(valor))) {
-      return respostaErro("Todas as notas devem ser números entre 0 e 10.");
-    }
-
-    const aluno = db.prepare("SELECT id_aluno FROM aluno WHERE id_aluno = ?").get(alunoId);
-    if (!aluno) {
-      return respostaErro("Aluno não encontrado na base de dados.", 404);
-    }
-
-    // Verifica se o aluno já possui notas cadastradas para atualizar (Upsert)
-    const notaExistente = db.prepare("SELECT id_nota FROM notas WHERE aluno_id = ?").get(alunoId);
-
-    let idNota;
-    if (notaExistente) {
-      db.prepare(`
-        UPDATE notas 
-        SET trabalho1 = ?, trabalho2 = ?, nota1 = ?, nota2 = ?, nota3 = ?
-        WHERE aluno_id = ?
-      `).run(...valores.map(Number), alunoId);
-      idNota = notaExistente.id_nota;
-    } else {
-      const resultado = db.prepare(`
-        INSERT INTO notas (trabalho1, trabalho2, nota1, nota2, nota3, aluno_id)
-        VALUES (?, ?, ?, ?, ?, ?)
-      `).run(...valores.map(Number), alunoId);
-      idNota = Number(resultado.lastInsertRowid);
-    }
-
-    const media = Number((valores.reduce((acc, v) => acc + Number(v), 0) / 5).toFixed(1));
-    const situacao = media >= 6.0 ? "Aprovado" : media >= 5.0 ? "Recuperação" : "Reprovado";
-
-    return NextResponse.json(
-      { 
-        message: "Notas salvas com sucesso!", 
-        id_nota: idNota,
-        media,
-        situacao
-      },
-      { status: 201 }
-    );
-  } catch (error) {
-    console.error(error);
-    return respostaErro("Não foi possível salvar a nota.", 500);
-  }
 }
 
+// Editar nota
 export async function PUT(request) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const dados = await request.json();
-    const id = Number(dados.id_nota ?? dados.id_notas ?? searchParams.get("id"));
-    const valores = campos.map((campo) => dados[campo] ?? dados[campo.replace("trabalho", "t")] ?? dados[campo.replace("nota", "n")]);
+    try {
+        const dados = await request.json();
+        const id_nota = dados.id_nota;
+        const t1 = parseFloat(dados.trabalho1 ?? dados.t1) || 0;
+        const t2 = parseFloat(dados.trabalho2 ?? dados.t2) || 0;
+        const n1 = parseFloat(dados.nota1 ?? dados.n1) || 0;
+        const n2 = parseFloat(dados.nota2 ?? dados.n2) || 0;
+        const n3 = parseFloat(dados.nota3 ?? dados.n3) || 0;
 
-    if (!Number.isInteger(id) || id <= 0) {
-      return respostaErro("Informe um id de nota válido.");
+        if (!id_nota) {
+            return NextResponse.json({ erro: "ID da nota é obrigatório." }, { status: 400 });
+        }
+
+        const sql = db.prepare(`
+            UPDATE notas
+            SET t1 = ?, t2 = ?, n1 = ?, n2 = ?, n3 = ?
+            WHERE id_nota = ?
+        `);
+        sql.run(t1, t2, n1, n2, n3, id_nota);
+        return NextResponse.json({
+            mensagem: "Nota atualizada com sucesso!"
+        });
+    } catch (erro) {
+        console.error("Erro ao editar nota:", erro);
+        return NextResponse.json({ erro: "Erro ao editar a nota." }, { status: 500 });
     }
-
-    if (!valores.every((valor) => validarNota(valor))) {
-      return respostaErro("Todas as notas devem estar entre 0 e 10.");
-    }
-
-    const resultado = db.prepare(`
-      UPDATE notas
-      SET trabalho1 = ?, trabalho2 = ?, nota1 = ?, nota2 = ?, nota3 = ?
-      WHERE id_nota = ?
-    `).run(...valores.map(Number), id);
-
-    if (resultado.changes === 0) {
-      return respostaErro("Nota não encontrada.", 404);
-    }
-
-    return NextResponse.json({ message: "Nota atualizada com sucesso!" });
-  } catch (error) {
-    console.error(error);
-    return respostaErro("Não foi possível atualizar a nota.", 500);
-  }
 }
 
+// Excluir nota pelo id_nota
 export async function DELETE(request) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const id = Number(searchParams.get("id") ?? 0);
+    try {
+        const dados = await request.json();
+        const id_nota = dados.id_nota;
 
-    if (!Number.isInteger(id) || id <= 0) {
-      return respostaErro("Informe um id de nota válido.");
+        if (!id_nota) {
+            return NextResponse.json({ erro: "ID da nota é obrigatório." }, { status: 400 });
+        }
+
+        const sql = db.prepare(`DELETE FROM notas WHERE id_nota = ?`);
+        sql.run(id_nota);
+        return NextResponse.json({
+            mensagem: "Nota excluída com sucesso!"
+        });
+    } catch (erro) {
+        console.error("Erro ao excluir a nota:", erro);
+        return NextResponse.json({ erro: "Erro ao excluir a nota." }, { status: 500 });
     }
-
-    const resultado = db.prepare("DELETE FROM notas WHERE id_nota = ?").run(id);
-
-    if (resultado.changes === 0) {
-      return respostaErro("Nota não encontrada.", 404);
-    }
-
-    return NextResponse.json({ message: "Nota excluída com sucesso!" });
-  } catch (error) {
-    console.error(error);
-    return respostaErro("Não foi possível excluir a nota.", 500);
-  }
 }

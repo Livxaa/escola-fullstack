@@ -1,0 +1,118 @@
+.container {
+    min-height: calc(100vh - 90px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem 1.5rem;
+    background: #fdfbf7;
+}
+
+.card {
+    width: 100%;
+    max-width: 600px;
+    padding: 2.5rem;
+    border-radius: 20px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+}
+
+.title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: .4rem;
+    color: #3182ce;
+}
+
+.subtitle {
+    text-align: center;
+    color: #718096;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+}
+
+.inputGroup label {
+    color: #4a5568;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.inputGroup input {
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
+    background: #fbfbfc;
+    border: 1px solid #cbd5e0;
+    color: #2d3748;
+    outline: none;
+    transition: .2s ease;
+}
+
+.inputGroup input::placeholder {
+    color: #a0aec0;
+}
+
+.inputGroup input:focus {
+    border-color: #63b3ed;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.25);
+}
+
+.button,
+.secondaryButton {
+    display: block;
+    width: 100%;
+    padding: 0.9rem;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.button {
+    margin-top: 1rem;
+    color: #2b6cb0;
+    background: #bee3f8;
+}
+
+.button:hover {
+    background: #90cdf4;
+    transform: translateY(-2px);
+}
+
+.secondaryButton {
+    margin-top: 0.75rem;
+    color: #4a5568;
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+}
+
+.secondaryButton:hover {
+    color: #2b6cb0;
+    background: #ebf8fa;
+    border-color: #cbd5e0;
+}
+
+@media (max-width: 480px) {
+    .card {
+        padding: 1.75rem 1.25rem;
+    }
+
+    .title {
+        font-size: 1.75rem;
+    }
+}

@@ -1,0 +1,95 @@
+.main {
+    min-height: calc(100vh - 90px);
+    padding: 3rem 1.5rem;
+    background: #fdfbf7;
+}
+
+.container {
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+.painel {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+}
+
+.painel h2 {
+    text-align: center;
+    color: #3182ce;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.campo label {
+    color: #4a5568;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.campo input,
+.campo select {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
+    background: #fbfbfc;
+    border: 1px solid #cbd5e0;
+    color: #2d3748;
+    font-size: 0.95rem;
+    outline: none;
+    transition: 0.2s ease;
+}
+
+.campo input::placeholder {
+    color: #a0aec0;
+}
+
+.campo input:focus,
+.campo select:focus {
+    border-color: #63b3ed;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.25);
+}
+
+.botao {
+    margin-top: 1rem;
+    padding: 0.9rem;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: #2b6cb0;
+    background: #bee3f8;
+    transition: 0.2s ease;
+}
+
+.botao:hover {
+    background: #90cdf4;
+    transform: translateY(-2px);
+}
+
+.botao:active {
+    transform: scale(0.99);
+}
+
+@media (max-width: 768px) {
+    .painel {
+        padding: 1.5rem;
+    }
+}
