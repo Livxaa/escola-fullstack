@@ -22,6 +22,20 @@ export default function Principal() {
                 </section>
 
                 <section className={styles.cards}>
+                    <Link href="/caddisciplina" className={styles.card}>
+                        <h3>📚 Cadastro de Disciplinas</h3>
+                        <p>
+                            Cadastre disciplinas e defina a pontuação mínima para aprovação.
+                        </p>
+                    </Link>
+
+                    <Link href="/cadprofessor" className={styles.card}>
+                        <h3>👩‍🏫 Cadastro de Professores</h3>
+                        <p>
+                            Registre professores, dias de aula, disciplina responsável e carga semanal.
+                        </p>
+                    </Link>
+
                     <Link href="/cadaluno" className={styles.card}>
                         <h3>👨‍🎓 Cadastro de Alunos</h3>
                         <p>

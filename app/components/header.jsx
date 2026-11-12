@@ -8,6 +8,8 @@ export default function Header(){
             <nav>
                 <ul className={estilos.menu}>
                     <li><Link href='/'>Início</Link></li>
+                    <li><Link href='/caddisciplina'>Disciplinas - Cadastro</Link></li>
+                    <li><Link href='/cadprofessor'>Professores - Cadastro</Link></li>
                     <li><Link href='/cadaluno'>Alunos - Cadastro</Link></li>
                     <li><Link href='/listaluno'>Alunos - Lista</Link></li>
                     <li><Link href='/cadnotas'>Notas - Cadastro</Link></li>
@@ -17,4 +19,3 @@ export default function Header(){
         </header>
     )
 }
-

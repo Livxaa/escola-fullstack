@@ -12,6 +12,21 @@ db.exec(`
         serie TEXT NOT NULL,
         ra TEXT NOT NULL UNIQUE
     ) ;   
+    CREATE TABLE IF NOT EXISTS disciplinas (
+        id_disciplina INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome TEXT NOT NULL,
+        pontuacao_minima REAL NOT NULL CHECK (pontuacao_minima BETWEEN 0 AND 10)
+    );
+    CREATE TABLE IF NOT EXISTS professores (
+        id_professor INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome TEXT NOT NULL,
+        nif TEXT NOT NULL UNIQUE,
+        dias_aula TEXT NOT NULL,
+        id_disciplina INTEGER NOT NULL,
+        total_aulas_semana INTEGER NOT NULL CHECK (total_aulas_semana > 0),
+        FOREIGN KEY (id_disciplina)
+        REFERENCES disciplinas(id_disciplina)
+    );
     CREATE TABLE IF NOT EXISTS notas (
         id_nota INTEGER PRIMARY KEY AUTOINCREMENT,
        id_aluno INTEGER NOT NULL UNIQUE,
@@ -28,5 +43,4 @@ db.exec(`
 console.log('Banco de dados criado com sucesso');
 
 export default db;
-
 
